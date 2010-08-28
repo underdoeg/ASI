@@ -36,7 +36,7 @@ enum ASI_DIR {
 #define ASI_TOPRIGHT ASI_TOPRIGHTFRONT
 #define ASI_BOTTOMRIGHT ASI_BOTTOMRIGHTFRONT
 
-class asiBounds{
+class asiBounds: public ofxVec3f{
 public:
 	asiBounds(){
 		
@@ -44,16 +44,46 @@ public:
 	
 	void set(int pos, float x, float y, float z){
 		points[pos].set(x,y,z);
+		updateBounds();
 	}
 	
 	void set(int pos, ofxVec3f v){
 		points[pos]=v;
+		updateBounds();
+	}
+	
+	void updateBounds(){
+		ofxVec3f tl = get(ASI_TOPLEFT);
+		ofxVec3f rb = get(ASI_BOTTOMRIGHT);
+		x = tl.x;
+		y = tl.y;
+		z = tl.z;
+		
+		width = rb.x-tl.x;
+		height = rb.y-tl.y;
+		depth = rb.z-tl.z;
+	}
+	
+	ofRectangle getOFRectangle(){
+		ofRectangle rect;
+		rect.x = x;
+		rect.y = y;
+		rect.width = width;
+		rect.height = height;
 	}
 	
 	ofxVec3f operator[](int i){
+		return get(i);
+	}
+	
+	ofxVec3f get(int i){
 		return points[i]; 
 	}
+	
 	ofxVec3f points[8];
+	float width;
+	float height;
+	float depth;
 };
 
 class asiObjectBase: public ofxVec3f{

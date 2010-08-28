@@ -46,7 +46,7 @@ void asiAnimator::play(){
 }
 
 void asiAnimator::restart(){
-	timeOffset = timeLast;
+	frame = 0;
 }
 
 bool asiAnimator::isPaused(){
