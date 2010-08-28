@@ -51,6 +51,10 @@ public:
 		
 		ofxAsi* asi = getSingleton();
 		asi->autoListen();
+		
+		for(int i=0;i<scenes.size();i++){
+			scenes[i]->animator.restart();
+		}
 	}
 	
 	static void update(){

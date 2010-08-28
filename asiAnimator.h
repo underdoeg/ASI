@@ -18,6 +18,10 @@ class asiObject;
 class asiScene;
 class asiAnimator;
 
+enum animationStates {
+	PAUSE, PLAY, STOP
+};
+
 struct asiMarker{
 	int frame;
 	string name;
@@ -76,7 +80,7 @@ public:
 		for(int i=0;i<frames.size()-1;i++){
 			asiKeyframe* f1 = &frames[i];
 			asiKeyframe* f2 = &frames[i+1];
-			if(f1->p.x<t && f2->p.x>t){
+			if(f1->p.x<=t && f2->p.x>=t){
 				t = t-f1->p.x;
 				t /=(f2->p.x-f1->p.x);
 				*val = f1->p.y+(f2->p.y-f1->p.y)*t;
@@ -85,7 +89,8 @@ public:
 			}
 		}
 		//we are over the last frame, so force to position
-		*val = frames.back().p.y;
+		if(t>0)
+			*val = frames.back().p.y;
 	}
 	
 	void draw(){
@@ -115,9 +120,17 @@ public:
 	static float bezierPoint(float a, float b, float c, float d, float t);
 	void step(int millis);
 	void draw();
+	void pause();
+	void stop();
+	void play();
+	void restart();
 	void addTween(asiTween* tween);
 	void addSequence(asiSequence* seq);
 	void addMarker(string name, int frame);
+	void jumpToFrame(float frame);
+	bool isPaused();
+	bool isStoped();
+	bool isPlaying();
 	ofEvent<asiAnimatorEvent> onStart;
 	ofEvent<asiAnimatorEvent> onEnd;
 	ofEvent<asiMarkerEvent> onMarker;
@@ -125,10 +138,13 @@ public:
 	float frame;
 	int frameEnd;
 	float fps;
-	int lastFrame;
 	asiScene* scene;
+	int state;
 protected:
 private:
+	int timeOffset;
+	int timeLast;
+	int lastFrame;
 	std::vector<asiTween*> tweens;
 	std::vector<asiSequence*> sequences;
 	std::vector<asiMarker> markers;

@@ -33,6 +33,10 @@ void asiScene::draw(){
 	}
 };
 
+asiAnimator* asiScene::getAnimator(){
+	return &animator;
+}
+
 void asiScene::setCamera(asiCamera* cam){
 	camera = cam;
 	hasCamera = true;

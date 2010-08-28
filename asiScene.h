@@ -24,6 +24,7 @@ public:
 	void draw();
 	
 	void setCamera(asiCamera* cam);
+	asiAnimator* getAnimator();
 	
 	asiSettings settings;
 	string name;

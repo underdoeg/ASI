@@ -12,6 +12,8 @@
 
 asiAnimator::asiAnimator(){
 	frame = 0;
+	state = PLAY;
+	timeLast = ofGetElapsedTimeMillis();
 };
 
 asiAnimator::~asiAnimator(){
@@ -23,11 +25,50 @@ float asiAnimator::bezierPoint(float a, float b, float c, float d, float t) {
 	return a*t1*t1*t1 + 3*b*t*t1*t1 + 3*c*t*t*t1 + d*t*t*t;
 }
 
+void asiAnimator::pause(){
+	state = PAUSE;
+}
+
+void asiAnimator::stop(){
+	state = STOP;
+	jumpToFrame(1);
+}
+
+void asiAnimator::play(){
+	if(state == STOP)
+		timeOffset = timeLast;
+	state = PLAY;
+}
+
+void asiAnimator::restart(){
+	timeOffset = timeLast;
+}
+
+bool asiAnimator::isPaused(){
+	return state == PAUSE;
+}
+bool asiAnimator::isStoped(){
+	return state == STOP;
+}
+bool asiAnimator::isPlaying(){
+	return state == PLAY;
+}
+
 void asiAnimator::step(int millis){
 	if(frameEnd == 0)
 		return;
-	double fp = 1.f/fps;
-	frame = (millis%int((frameEnd+1)*fps))*fp;
+	if(state == PAUSE)
+		timeOffset+=millis-timeLast;
+	else if(state == PLAY){
+		double fp = 1.f/fps;
+		float fr = ((millis-timeOffset)%int((frameEnd+1)*fps))*fp;
+		jumpToFrame(fr);
+	}
+	timeLast = millis;
+}
+
+void asiAnimator::jumpToFrame(float fr){
+	frame = fr;
 	for(int i=0;i<tweens.size();i++){
 		tweens[i]->update(frame);
 	}
@@ -51,6 +92,7 @@ void asiAnimator::step(int millis){
 			static asiAnimatorEvent e(thisFrame);
 			ofNotifyEvent(onEnd, e);
 		}
+		
 		if(thisFrame == 0){
 			if(scene->settings.loop){
 				static asiAnimatorEvent e(thisFrame);
