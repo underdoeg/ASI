@@ -22,17 +22,20 @@ copyResPathAbs = ""
 copyResPathRel = ""
 copyRes = True
 
+def vertToXML(node, vert):
+    vertsNode = doc.createElement("v");
+    node.appendChild(vertsNode)
+    #vertsNode.setAttribute("index", str(vert.index));
+    vertsNode.setAttribute("x", str(vert.co.x));
+    vertsNode.setAttribute("y", str(vert.co.y));
+    vertsNode.setAttribute("z", str(vert.co.z));
+    
 def meshToXML(node, mesh):
     vertsNode = doc.createElement("verts");
     node.appendChild(vertsNode)
    
     for vert in mesh.verts:
-        vertsNode = doc.createElement("v");
-        node.appendChild(vertsNode)
-        #vertsNode.setAttribute("index", str(vert.index));
-        vertsNode.setAttribute("x", str(vert.co.x));
-        vertsNode.setAttribute("y", str(vert.co.y));
-        vertsNode.setAttribute("z", str(vert.co.z));
+        vertToXML(vertsNode, vert)
     
     for face in mesh.faces:
         fNode = doc.createElement("face");
@@ -76,6 +79,18 @@ def objectAnimToXML(node, object):
             kNode.setAttribute("h1Y", str(key.handle1[1]))
             kNode.setAttribute("h2X", str(key.handle2[0]))
             kNode.setAttribute("h2Y", str(key.handle2[1]))
+
+#bounding box
+def boundsToXML(node, bounds):
+    bNode = doc.createElement("bounds")
+    node.appendChild(bNode)
+    for b in bounds:
+        n = doc.createElement("v")
+        bNode.appendChild(n)
+        n.setAttribute("x", str(b[0]));
+        n.setAttribute("y", str(b[1]));
+        n.setAttribute("z", str(b[2]));
+        
 
 #function to convert an object into an xml
 def objectToXML(node, object):
@@ -123,6 +138,11 @@ def objectToXML(node, object):
     oNode.setAttribute("rx", str(object.rotation_euler[0]))
     oNode.setAttribute("ry", str(object.rotation_euler[1]))
     oNode.setAttribute("rz", str(object.rotation_euler[2]))
+    
+    #bounding box
+    boundsToXML(oNode, object.bound_box)
+    
+    oNode.setAttribute("bounds","12;34;56")
     
     meshToXML(oNode, object.data)
     objectAnimToXML(oNode, object)

@@ -19,6 +19,7 @@ public:
 	void loadImg(string path);
 	void bind();
 	void unbind();
+	ofImage* getImage();
 	int getTexScaleW();
 	int getTexScaleH();
 	

@@ -17,6 +17,10 @@ asiImage::~asiImage(){
 	
 };
 
+ofImage* asiImage::getImage(){
+	return &img;
+}
+
 void asiImage::loadImg(string path){
 	imgLoaded = img.loadImage(asiData::toPath(path));
 	if(!imgLoaded)

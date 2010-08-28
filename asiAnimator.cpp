@@ -13,6 +13,7 @@
 asiAnimator::asiAnimator(){
 	frame = 0;
 	state = PLAY;
+	setFPS(60);
 	timeLast = ofGetElapsedTimeMillis();
 };
 
@@ -25,18 +26,22 @@ float asiAnimator::bezierPoint(float a, float b, float c, float d, float t) {
 	return a*t1*t1*t1 + 3*b*t*t1*t1 + 3*c*t*t*t1 + d*t*t*t;
 }
 
+void asiAnimator::setFPS(int newFPS){
+	fps = newFPS;
+	fpsInv = 1/fps;
+	duration = int((frameEnd+1)*fps);
+}
+
 void asiAnimator::pause(){
 	state = PAUSE;
 }
 
 void asiAnimator::stop(){
 	state = STOP;
-	jumpToFrame(1);
+	jumpToFrame(0);
 }
 
 void asiAnimator::play(){
-	if(state == STOP)
-		timeOffset = timeLast;
 	state = PLAY;
 }
 
@@ -57,18 +62,14 @@ bool asiAnimator::isPlaying(){
 void asiAnimator::step(int millis){
 	if(frameEnd == 0)
 		return;
-	if(state == PAUSE)
-		timeOffset+=millis-timeLast;
-	else if(state == PLAY){
-		double fp = 1.f/fps;
-		float fr = ((millis-timeOffset)%int((frameEnd+1)*fps))*fp;
-		jumpToFrame(fr);
+	if(state == PLAY){
+		frame+=(millis-timeLast)*fpsInv;
+		updateFrame();
 	}
 	timeLast = millis;
 }
 
-void asiAnimator::jumpToFrame(float fr){
-	frame = fr;
+void asiAnimator::updateFrame(){
 	for(int i=0;i<tweens.size();i++){
 		tweens[i]->update(frame);
 	}
@@ -79,18 +80,20 @@ void asiAnimator::jumpToFrame(float fr){
 	
 	if(thisFrame != lastFrame){ //only continue if frame is new
 		for(int i=0;i<markers.size();i++){
-			if(markers[i].frame == thisFrame){
+			if(thisFrame>=markers[i].frame && lastFrame<=markers[i].frame){
 				static asiMarkerEvent e;
 				e.scene = scene;
 				e.animator = this;
 				e.marker = markers[i];
 				ofNotifyEvent(onMarker, e);
+				markerName = e.marker.name;
 			}
 		}
 		
 		if(thisFrame == frameEnd){
 			static asiAnimatorEvent e(thisFrame);
 			ofNotifyEvent(onEnd, e);
+			frame = 0;
 		}
 		
 		if(thisFrame == 0){
@@ -101,6 +104,17 @@ void asiAnimator::jumpToFrame(float fr){
 		}
 	}
 	lastFrame = thisFrame;
+}
+
+void asiAnimator::jumpToFrame(float fr){
+	frame = fr;
+}
+
+void asiAnimator::jumpToMarker(string name){
+	for(int i=0;i<markers.size();i++){
+		if(markers[i].name == name)
+			jumpToFrame(markers[i].frame);
+	}
 }
 
 void asiAnimator::addTween(asiTween* tween){

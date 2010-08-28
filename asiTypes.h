@@ -27,6 +27,35 @@ struct asiSettings{
 	bool autoResize;
 };
 
+enum ASI_DIR {
+	ASI_TOPLEFTFRONT, ASI_TOPLEFTBACK, ASI_TOPRIGHTFRONT, ASI_BOTTOMLEFTFRONT, ASI_BOTTOMLEFTBACK, ASI_TOPRIGHTBACK, ASI_BOTTOMRIGHTFRONT, ASI_BOTTOMRIGHTBACK
+};
+
+#define ASI_TOPLEFT ASI_TOPLEFTFRONT
+#define ASI_BOTTOMLEFT ASI_BOTTOMLEFTFRONT
+#define ASI_TOPRIGHT ASI_TOPRIGHTFRONT
+#define ASI_BOTTOMRIGHT ASI_BOTTOMRIGHTFRONT
+
+class asiBounds{
+public:
+	asiBounds(){
+		
+	}
+	
+	void set(int pos, float x, float y, float z){
+		points[pos].set(x,y,z);
+	}
+	
+	void set(int pos, ofxVec3f v){
+		points[pos]=v;
+	}
+	
+	ofxVec3f operator[](int i){
+		return points[i]; 
+	}
+	ofxVec3f points[8];
+};
+
 class asiObjectBase: public ofxVec3f{
 public:
 	string name;
@@ -38,6 +67,8 @@ public:
 	ofxVec3f origPos;
 	
 	asiScene* scene;
+	
+	asiBounds bounds;
 	
 	void setOriginal(){
 		origScale.set(scale);

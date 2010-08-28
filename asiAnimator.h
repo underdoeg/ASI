@@ -33,7 +33,6 @@ struct asiKeyframe{
 	ofPoint p;
 };
 
-
 class asiAnimatorEvent{
 public:
 	asiAnimatorEvent(int f=0){
@@ -128,6 +127,9 @@ public:
 	void addSequence(asiSequence* seq);
 	void addMarker(string name, int frame);
 	void jumpToFrame(float frame);
+	void updateFrame();
+	void jumpToMarker(string name);
+	void setFPS(int fps);
 	bool isPaused();
 	bool isStoped();
 	bool isPlaying();
@@ -137,14 +139,18 @@ public:
 	
 	float frame;
 	int frameEnd;
-	float fps;
 	asiScene* scene;
 	int state;
+	string markerName;
+	int duration;
 protected:
 private:
+	double fpsInv;
 	int timeOffset;
 	int timeLast;
 	int lastFrame;
+	float fps;
+
 	std::vector<asiTween*> tweens;
 	std::vector<asiSequence*> sequences;
 	std::vector<asiMarker> markers;
