@@ -155,7 +155,7 @@ def markerToXML(node, marker):
     markNode = doc.createElement("marker")
     node.appendChild(markNode)
     markNode.setAttribute("name", marker.name)
-    markNode.setAttribute("frame", marker.frame)
+    markNode.setAttribute("frame", str(marker.frame))
 
 #function to convert sequences to xml
 def seqToXML(node, seq):

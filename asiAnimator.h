@@ -15,6 +15,13 @@
 #include "asiSequence.h"
 
 class asiObject;
+class asiScene;
+class asiAnimator;
+
+struct asiMarker{
+	int frame;
+	string name;
+};
 
 struct asiKeyframe{
 	ofPoint h1;
@@ -22,8 +29,21 @@ struct asiKeyframe{
 	ofPoint p;
 };
 
+
 class asiAnimatorEvent{
+public:
+	asiAnimatorEvent(int f=0){
+		frame = f;
+	}
+	int frame;
 	
+};
+
+class asiMarkerEvent{
+public:
+	asiMarker marker;
+	asiScene* scene;
+	asiAnimator* animator;
 };
 
 class asiTween {
@@ -97,16 +117,21 @@ public:
 	void draw();
 	void addTween(asiTween* tween);
 	void addSequence(asiSequence* seq);
+	void addMarker(string name, int frame);
 	ofEvent<asiAnimatorEvent> onStart;
+	ofEvent<asiAnimatorEvent> onEnd;
+	ofEvent<asiMarkerEvent> onMarker;
 	
 	float frame;
 	int frameEnd;
 	float fps;
 	int lastFrame;
+	asiScene* scene;
 protected:
 private:
 	std::vector<asiTween*> tweens;
 	std::vector<asiSequence*> sequences;
+	std::vector<asiMarker> markers;
 };
 
 #endif

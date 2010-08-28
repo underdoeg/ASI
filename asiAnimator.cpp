@@ -8,7 +8,7 @@
  */
 
 #include "asiAnimator.h"
-
+#include "asiScene.h"
 
 asiAnimator::asiAnimator(){
 	frame = 0;
@@ -27,17 +27,36 @@ void asiAnimator::step(int millis){
 	if(frameEnd == 0)
 		return;
 	double fp = 1.f/fps;
-	frame = (millis%int(frameEnd*fps))*fp;
+	frame = (millis%int((frameEnd+1)*fps))*fp;
 	for(int i=0;i<tweens.size();i++){
 		tweens[i]->update(frame);
 	}
 	for(int i=0;i<sequences.size();i++){
 		sequences[i]->update(frame);
-	} 
+	}
 	int thisFrame = (int)floorf(frame);
-	if(thisFrame == 0 && lastFrame != thisFrame){
-		static asiAnimatorEvent e;
-		ofNotifyEvent(onStart, e);
+	
+	if(thisFrame != lastFrame){ //only continue if frame is new
+		for(int i=0;i<markers.size();i++){
+			if(markers[i].frame == thisFrame){
+				static asiMarkerEvent e;
+				e.scene = scene;
+				e.animator = this;
+				e.marker = markers[i];
+				ofNotifyEvent(onMarker, e);
+			}
+		}
+		
+		if(thisFrame == frameEnd){
+			static asiAnimatorEvent e(thisFrame);
+			ofNotifyEvent(onEnd, e);
+		}
+		if(thisFrame == 0){
+			if(scene->settings.loop){
+				static asiAnimatorEvent e(thisFrame);
+				ofNotifyEvent(onStart, e);
+			}
+		}
 	}
 	lastFrame = thisFrame;
 }
