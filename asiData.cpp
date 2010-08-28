@@ -38,6 +38,9 @@ asiImage* asiData::getImage(string name){
 void asiData::addImage(asiImage* img){
 	images[img->name] = img;
 }
+asiScene* asiData::getScene(string name){
+	return scenes[name];
+}
 void asiData::addScene(asiScene* scn){
 	ofxAsi::addScene(scn);
 	scenes[scn->name] = scn;

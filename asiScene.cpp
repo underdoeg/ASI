@@ -13,6 +13,7 @@
 asiScene::asiScene(){
 	scene = this;
 	hasCamera = false;
+	animator.scene = this;
 };
 
 asiScene::~asiScene(){

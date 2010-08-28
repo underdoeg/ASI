@@ -69,6 +69,13 @@ void asiAnimator::addSequence(asiSequence* seq){
 	sequences.push_back(seq);
 }
 
+void asiAnimator::addMarker(string name, int frame){
+	asiMarker m;
+	m.frame = frame;
+	m.name = name;
+	markers.push_back(m);
+}
+
 void asiAnimator::draw(){
 	ofPushMatrix();
 	for(int i=0;i<tweens.size();i++){

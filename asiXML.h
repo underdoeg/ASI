@@ -121,6 +121,14 @@ public:
 		xml->popTag();
 	}
 	
+	static void xmlToMarkers(ofxXmlSettings* xml, asiAnimator* animator){
+		xml->pushTag("markers", 0);
+		for(int i=0;i<xml->getNumTags("marker");i++){
+			animator->addMarker(xml->getAttribute("marker", "name", "noName", i), xml->getAttribute("marker", "frame", 0, i));
+		}
+		xml->popTag();
+	}
+	
 	static void xmlToCamera(ofxXmlSettings* xml, asiScene* scene){
 		if(xml->getNumTags("cam")>0){
 			asiCamera* cam = new asiCamera;
@@ -149,6 +157,8 @@ public:
 			scn->animator.frameEnd = xml->getAttribute("scene", "frameEnd", 1, 0);
 			scn->name = xml->getAttribute("scene", "name", "scene", 0);
 			xml->pushTag("scene", i);
+			
+			xmlToMarkers(xml, &scn->animator);
 			
 			//parse objects
 			xml->pushTag("objects", 0);

@@ -34,6 +34,7 @@ public:
 	static asiImage* getImage(string name);
 	static void addImage(asiImage* obj);
 	
+	static asiScene* getScene(string name);
 	static void addScene(asiScene* scn);
 	
 	static int nextAutoNumber();
