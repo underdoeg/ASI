@@ -29,6 +29,7 @@ public:
 	std::vector<asiFace> faces;
 protected:
 private:
+	
 };
 
 #endif

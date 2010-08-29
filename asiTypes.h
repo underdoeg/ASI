@@ -14,6 +14,8 @@
 #include "asiGeomTypes.h"
 #include "asiAnimator.h"
 
+class asiObjectBase;
+
 struct asiSettings{
 	asiSettings(){
 		play = true;
@@ -28,7 +30,7 @@ struct asiSettings{
 };
 
 enum ASI_DIR {
-	ASI_TOPLEFTFRONT, ASI_TOPLEFTBACK, ASI_TOPRIGHTFRONT, ASI_BOTTOMLEFTFRONT, ASI_BOTTOMLEFTBACK, ASI_TOPRIGHTBACK, ASI_BOTTOMRIGHTFRONT, ASI_BOTTOMRIGHTBACK
+	ASI_TOPLEFTFRONT, ASI_TOPLEFTBACK, ASI_BOTTOMLEFTFRONT, ASI_BOTTOMLEFTBACK, ASI_TOPRIGHTFRONT, ASI_TOPRIGHTBACK, ASI_BOTTOMRIGHTFRONT, ASI_BOTTOMRIGHTBACK
 };
 
 #define ASI_TOPLEFT ASI_TOPLEFTFRONT
@@ -39,7 +41,8 @@ enum ASI_DIR {
 class asiBounds: public ofxVec3f{
 public:
 	asiBounds(){
-		
+		obj = NULL;
+		updateBounds();
 	}
 	
 	void set(int pos, float x, float y, float z){
@@ -59,9 +62,11 @@ public:
 		y = tl.y;
 		z = tl.z;
 		
-		width = rb.x-tl.x;
-		height = rb.y-tl.y;
-		depth = rb.z-tl.z;
+		width = abs(rb.x-tl.x);
+		height = abs(rb.y-tl.y);
+		depth = abs(rb.z-tl.z);
+		
+		//cout << "update width to " << width << endl;
 	}
 	
 	ofRectangle getOFRectangle(){
@@ -76,18 +81,21 @@ public:
 		return get(i);
 	}
 	
-	ofxVec3f get(int i){
-		return points[i]; 
-	}
+	ofxVec3f get(int i);
 	
 	ofxVec3f points[8];
 	float width;
 	float height;
 	float depth;
+	asiObjectBase* obj;
 };
 
 class asiObjectBase: public ofxVec3f{
 public:
+	asiObjectBase(){
+		bounds.obj = this;
+	}
+	
 	string name;
 	ofxVec3f scale;
 	ofxVec3f rotation;
@@ -114,6 +122,16 @@ public:
 	
 	void reset(){
 		readOriginal();
+	}
+	
+	void hide(){
+		hidden = true;
+	}
+	void show(){
+		hidden = false;
+	}
+	bool isHidden(){
+		return hidden;
 	}
 	
 	virtual void draw(){
@@ -176,6 +194,7 @@ public:
 	}
 	
 	virtual bool linkTweenSpecial(asiTween* t){return false;};
+	bool hidden;
 };
 
 class asiObjectContainer: public asiObjectBase{

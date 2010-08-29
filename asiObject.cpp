@@ -10,8 +10,9 @@
 #include "asiObject.h"
 
 
-asiObject::asiObject(){
+asiObject::asiObject():asiObjectContainer(){
 	parent = NULL;
+	hidden = false;
 };
 
 asiObject::~asiObject(){
@@ -27,6 +28,8 @@ void asiObject::addFace(asiFace f){
 }
 
 void asiObject::draw(){
+	if(isHidden())
+		return;
 	ofFill();
 	ofSetColor(255, 255, 255);
 	ofPushMatrix();
@@ -53,7 +56,7 @@ void asiObject::draw(){
 		glBegin(GL_POLYGON);
 		for(int j=0;j<faces[i].indexes.size();j++){
 			asiVert v = verts[faces[i].indexes[j]];
-			if(faces[i].uv.size()>=j)
+			if(faces[i].uv.size()>j)
 				glTexCoord2f ((faces[i].uv[j].x)*tW, (1-faces[i].uv[j].y)*tH);
 			glVertex3f(v.x, v.y, v.z);
 		}

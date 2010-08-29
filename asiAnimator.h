@@ -133,6 +133,7 @@ public:
 	bool isPaused();
 	bool isStoped();
 	bool isPlaying();
+	void togglePause();
 	ofEvent<asiAnimatorEvent> onStart;
 	ofEvent<asiAnimatorEvent> onEnd;
 	ofEvent<asiMarkerEvent> onMarker;

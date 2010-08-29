@@ -125,9 +125,9 @@ def objectToXML(node, object):
     oNode.setAttribute("sy", str(object.scale[1]))
     oNode.setAttribute("sz", str(object.scale[2]))
     
-    rX = 0;
-    rY = 0;
-    rZ = 0;
+    rX = 0
+    rY = 0
+    rZ = 0
     obj = object.parent
     while obj != None:
         rX = rX +obj.rotation_euler[0]
@@ -141,8 +141,6 @@ def objectToXML(node, object):
     
     #bounding box
     boundsToXML(oNode, object.bound_box)
-    
-    oNode.setAttribute("bounds","12;34;56")
     
     meshToXML(oNode, object.data)
     objectAnimToXML(oNode, object)
@@ -206,7 +204,9 @@ def imageToXML(node, img):
         if os.path.exists(dirPath) == False:
             os.mkdir(dirPath)
         basename = os.path.join(dirName,os.path.basename(path))
-        shutil.copy(path, os.path.join(copyResPathAbs, basename))
+        fullpath = os.path.join(copyResPathAbs, basename)
+        if os.path.exists(path) == True:
+            shutil.copy(path, fullpath)
         imgNode.setAttribute("file", os.path.join(copyResPathRel, basename))
     else:
         imgNode.setAttribute("file", path)

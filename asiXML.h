@@ -35,7 +35,7 @@ public:
 		xmlToImages(&xml);
 	}
 	
-	static ofxVec3f xmlNodeToVec3f(ofxXmlSettings* xml, string name, int pos){
+	static ofxVec3f xmlNodeToVec3f(ofxXmlSettings* xml, string name="v", int pos=0){
 		ofxVec3f vec;
 		vec.set(xml->getAttribute(name, "x", 0.f, pos), xml->getAttribute(name, "y", 0.f, pos), xml->getAttribute(name, "z", 0.f, pos));
 		return vec;
@@ -45,7 +45,7 @@ public:
 		for(int i=0;i<xml->getNumTags("v");i++){
 			if(i==8)
 				return;
-			bounds->set(0, xmlNodeToVec3f(xml, "v", i));
+			bounds->set(i, xmlNodeToVec3f(xml, "v", i));
 		}
 	}
 	

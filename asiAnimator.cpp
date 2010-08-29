@@ -13,7 +13,7 @@
 asiAnimator::asiAnimator(){
 	frame = 0;
 	state = PLAY;
-	setFPS(60);
+	setFPS(25);
 	timeLast = ofGetElapsedTimeMillis();
 };
 
@@ -58,12 +58,17 @@ bool asiAnimator::isStoped(){
 bool asiAnimator::isPlaying(){
 	return state == PLAY;
 }
-
+void asiAnimator::togglePause(){
+	if(isPaused())
+		play();
+	else
+		pause();
+}
 void asiAnimator::step(int millis){
 	if(frameEnd == 0)
 		return;
 	if(state == PLAY){
-		frame+=(millis-timeLast)*fpsInv;
+		frame+=(millis-timeLast)/1000.f*fps;
 		updateFrame();
 	}
 	timeLast = millis;

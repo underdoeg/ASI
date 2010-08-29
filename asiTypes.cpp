@@ -10,7 +10,15 @@
 #include "asiTypes.h"
 #include "asiObject.h"
 
-asiObjectContainer::asiObjectContainer(){
+ofxVec3f asiBounds::get(int i){
+	ofxVec3f ret = points[i];
+	if(obj != NULL){
+		ret *= obj->scale;
+	}
+	return ret;
+};
+
+asiObjectContainer::asiObjectContainer():asiObjectBase(){
 	
 };
 
@@ -23,6 +31,7 @@ void asiObjectContainer::addObject(asiObjectBase* obj){
 	obj->scene = scene;
 	objNames.push_back(obj->name);
 }
+
 void asiObjectContainer::drawObjects(){
 	for (int i=0; i<objNames.size(); i++) {
 		asiData::getObject(objNames[i])->draw();
