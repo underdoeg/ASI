@@ -14,6 +14,9 @@
 #include "asiGeomTypes.h"
 #include "asiAnimator.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 class asiObjectBase;
 
 struct asiSettings{
@@ -62,9 +65,9 @@ public:
 		y = tl.y;
 		z = tl.z;
 		
-		width = abs(rb.x-tl.x);
-		height = abs(rb.y-tl.y);
-		depth = abs(rb.z-tl.z);
+		width = fabs(rb.x-tl.x);
+		height = fabs(rb.y-tl.y);
+		depth = fabs(rb.z-tl.z);
 		
 		//cout << "update width to " << width << endl;
 	}
