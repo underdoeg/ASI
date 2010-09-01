@@ -12,6 +12,7 @@
 
 asiAnimator::asiAnimator(){
 	frame = 0;
+	lastFrame = -1;
 	state = PLAY;
 	setFPS(25);
 	timeLast = ofGetElapsedTimeMillis();
@@ -38,7 +39,6 @@ void asiAnimator::pause(){
 
 void asiAnimator::stop(){
 	state = STOP;
-	jumpToFrame(0);
 }
 
 void asiAnimator::play(){
@@ -47,6 +47,7 @@ void asiAnimator::play(){
 
 void asiAnimator::restart(){
 	frame = 0;
+	updateFrame();
 }
 
 bool asiAnimator::isPaused(){
@@ -117,11 +118,13 @@ void asiAnimator::jumpToFrame(float fr){
 
 void asiAnimator::jumpToMarker(string name){
 	for(int i=0;i<markers.size();i++){
-		if(markers[i].name == name)
+		if(markers[i].name == name){
+			markerName = name;
 			jumpToFrame(markers[i].frame);
+		}
 	}
 }
-
+                              
 void asiAnimator::addTween(asiTween* tween){
 	tweens.push_back(tween);
 }

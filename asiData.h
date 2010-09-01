@@ -15,6 +15,7 @@
 class asiObjectBase;
 class asiScene;
 class asiImage;
+class asiSound;
 
 class asiData{
 public:
@@ -34,6 +35,9 @@ public:
 	static asiImage* getImage(string name);
 	static void addImage(asiImage* obj);
 	
+	static asiSound* getSound(string name);
+	static void addSound(asiSound* obj);
+	
 	static asiScene* getScene(string name);
 	static void addScene(asiScene* scn);
 	
@@ -47,7 +51,7 @@ private:
 	static std::map<string, asiScene*> scenes;
 	static std::map<string, asiObjectBase*> objects;
 	static std::map<string, asiImage*> images;
-	
+	static std::map<string, asiSound*> sounds;
 };
 
 #endif

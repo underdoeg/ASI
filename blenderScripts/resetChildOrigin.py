@@ -28,8 +28,8 @@ class ResetChildOrigin(bpy.types.Operator):
         for obj in objs:
             if obj.parent != None:
                 #get the offset for later
-                parMat = obj.parent.matrix.copy() 
-                locMat = obj.matrix.copy()
+                parMat = obj.parent.matrix_world.copy() 
+                locMat = obj.matrix_world.copy()
                 mat = parMat.invert()*locMat
                 
                 oldLoc = obj.location.copy();
@@ -40,7 +40,7 @@ class ResetChildOrigin(bpy.types.Operator):
                 """
                 
                 #now clear origin and location
-                obj.selected = True
+                obj.select = True
                 bpy.ops.object.location_clear()
                 bpy.ops.object.origin_clear()
                 
@@ -55,7 +55,7 @@ class ResetChildOrigin(bpy.types.Operator):
                 #obj.matrix = mat
                 
                 #deselect to finish up
-                obj.selected = False
+                obj.select = False
                 
                 #locMat = obj.matrix-locMat
                 trans = obj.location-oldLoc
@@ -77,9 +77,10 @@ class ResetChildOrigin(bpy.types.Operator):
         
         #little cleanup, restore original selection
         for obj in objs:
-            obj.selected = True
+            obj.select = True
             
         bpy.context.tool_settings.use_auto_keying = origAutoKey
+        return {'RUNNING_MODAL'}
 
 def register():
     bpy.types.register(ResetChildOrigin)

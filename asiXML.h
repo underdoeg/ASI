@@ -31,8 +31,10 @@ public:
 		}
 		
 		xml.pushTag("root", 0);
-		xmlToScenes(settings, &xml);
 		xmlToImages(&xml);
+		xmlToSounds(&xml);
+		xmlToScenes(settings, &xml);
+		
 	}
 	
 	static ofxVec3f xmlNodeToVec3f(ofxXmlSettings* xml, string name="v", int pos=0){
@@ -100,6 +102,7 @@ public:
 			
 			xmlToAnim(xml, obj);
 			
+			
 			xmlToObjects(xml, obj);
 			
 			xml->popTag();
@@ -114,6 +117,38 @@ public:
 			img->loadImg(xml->getAttribute("img", "file", "/", i));
 			asiData::addImage(img);
 		}
+	}
+	
+	static void xmlToSounds(ofxXmlSettings* xml){
+		for (int i=0;i<xml->getNumTags("snd"); i++){
+			asiSound* snd = new asiSound;
+			snd->name = xml->getAttribute("snd", "name", "none", i);
+			snd->load(xml->getAttribute("snd", "file", "/", i));
+			asiData::addSound(snd);
+		}
+	}
+	
+	static void xmlToSequences(ofxXmlSettings* xml, asiAnimator* animator){
+		xml->pushTag("sequences", 0);
+		for (int i=0;i<xml->getNumTags("seq"); i++){
+			bool seqMade = false;
+			asiSequence* seq;
+			string type = xml->getAttribute("seq", "type", "", i);
+			if(type == "SOUND"){
+				asiSoundSequence* sSeq = new asiSoundSequence;
+				sSeq->snd = asiData::getSound(xml->getAttribute("seq", "name", "", i));
+				sSeq->volume = xml->getAttribute("seq", "vol", 1.f, i);
+				seq = sSeq;
+				seqMade = true;
+			}
+			
+			if(seqMade){
+				seq->startFrame = xml->getAttribute("seq", "start", 0, i);
+				seq->length = xml->getAttribute("seq", "length", 0, i);
+			}
+			animator->addSequence(seq);
+		}
+		xml->popTag();
 	}
 	
 	static void xmlToAnim(ofxXmlSettings* xml, asiObjectBase* obj){
@@ -186,6 +221,7 @@ public:
 			xml->popTag();
 			
 			xmlToCamera(xml, scn);
+			xmlToSequences(xml, &scn->animator);
 			
 			asiData::addScene(scn);
 			

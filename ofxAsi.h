@@ -18,6 +18,7 @@
 #include "asiAnimator.h"
 #include "asiCamera.h"
 #include "ofx3DUtils.h"
+#include "asiSound.h"
 #include <map>
 
 class ofxAsi{
@@ -38,16 +39,18 @@ public:
 	}
 	
 	static void init(){
-		glEnable(GL_DEPTH_TEST);
+		/*glEnable(GL_DEPTH_TEST);
 		glClearDepth(1.0);				
 		glDepthFunc(GL_LEQUAL);				
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 		glAlphaFunc(GL_GREATER,0.1);
 		glEnable(GL_ALPHA_TEST);				
-		glEnable(GL_TEXTURE_2D);					
+		glEnable(GL_TEXTURE_2D);	
+		
 		glEnable(GL_CULL_FACE);
-		glDisable(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);*/
+		
 		
 		ofxAsi* asi = getSingleton();
 		asi->autoListen();
@@ -64,11 +67,21 @@ public:
 	}
 	
 	static void draw(){
+
+		
+		glEnable(GL_DEPTH_TEST);  
+		glDepthFunc(GL_LEQUAL);	
+		glEnable(GL_ALPHA_TEST);  
+		glEnable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glAlphaFunc(GL_GREATER,0.1);
+		ofEnableAlphaBlending();
 		if(doEasyCam)
 			easyCam->place();
 		for(int i=0;i<scenes.size();i++){
 			scenes[i]->draw();
 		}
+		ofDisableAlphaBlending();
 	}
 	
 	static void enableEasyCam(){

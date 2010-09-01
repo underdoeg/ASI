@@ -26,11 +26,13 @@ void asiScene::update(int millis){
 };
 
 void asiScene::draw(){
+	ofEnableAlphaBlending();
 	if(settings.play){
 		if(hasCamera && settings.doCamera)
 			camera->place();
 		drawObjects();
 	}
+	ofDisableAlphaBlending();
 };
 
 asiAnimator* asiScene::getAnimator(){
